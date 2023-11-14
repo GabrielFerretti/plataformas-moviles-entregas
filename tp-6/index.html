@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon App</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container mt-5">
+    <h1 class="mb-4">Lista de Pokémon</h1>
+
+    <div id="pokemonList" class="row">
+    </div>
+
+    <div id="loadingSpinner" class="text-center mt-3" style="display: none;">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Cargando...</span>
+        </div>
+    </div>
+
+    <div id="loadMoreBtn" class="text-center mt-3" style="display: none;">
+        <button class="btn btn-primary">Cargar más Pokémon</button>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const pokemonListElement = document.getElementById('pokemonList');
+        const loadingSpinnerElement = document.getElementById('loadingSpinner');
+        const loadMoreBtnElement = document.getElementById('loadMoreBtn');
+
+        let offset = 0;
+
+        function fetchPokemonList() {
+            loadingSpinnerElement.style.display = 'block';
+
+            fetch(`https://pokeapi.co/api/v2/pokemon/?limit=151&offset=${offset}`)
+                .then(response => response.json())
+                .then(data => {
+                    loadingSpinnerElement.style.display = 'none';
+
+                    data.results.forEach(pokemon => {
+                        const pokemonCard = document.createElement('div');
+                        pokemonCard.className = 'col-md-4 mb-3';
+
+                        const pokemonName = document.createElement('h5');
+                        pokemonName.textContent = pokemon.name;
+
+                        const detailsBtn = document.createElement('button');
+                        detailsBtn.className = 'btn btn-info';
+                        detailsBtn.textContent = 'Detalles';
+                        detailsBtn.addEventListener('click', () => showPokemonDetails(pokemon.name));
+
+                        pokemonCard.appendChild(pokemonName);
+                        pokemonCard.appendChild(detailsBtn);
+
+                        pokemonListElement.appendChild(pokemonCard);
+                    });
+                })
+                .catch(error => console.error('Error al obtener la lista de Pokémon:', error));
+        }
+
+        function showPokemonDetails(pokemonName) {
+            alert(`Mostrar detalles de ${pokemonName}`);
+        }
+
+        fetchPokemonList();
+    });
+</script>
+</body>
+</html>
