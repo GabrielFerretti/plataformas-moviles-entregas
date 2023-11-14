@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon App</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        .pokemon-card {
+            margin: 10px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .pokemon-img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+<body>
+
+    <div class="container mt-4">
+        <h1 class="mb-4">Pokémon App</h1>
+        <div id="pokemon-list" class="row">
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch('https://pokeapi.co/api/v2/pokemon?limit=151')
+                .then(response => response.json())
+                .then(data => {
+                    const pokemonListContainer = document.getElementById('pokemon-list');
+
+                    data.results.forEach(pokemon => {
+                        const pokemonCard = document.createElement('div');
+                        pokemonCard.classList.add('col-md-4', 'pokemon-card');
+
+                        pokemonCard.innerHTML = `
+                            <h5>${pokemon.name}</h5>
+                            <button class="btn btn-primary" onclick="getPokemonDetails('${pokemon.url}')">Ver Detalles</button>
+                        `;
+
+                        pokemonListContainer.appendChild(pokemonCard);
+                    });
+                })
+                .catch(error => console.error('Error fetching Pokémon list:', error));
+
+            window.getPokemonDetails = function (url) {
+                fetch(url)
+                    .then(response => response.json())
+                    .then(pokemonData => {
+                        alert(`Detalles del Pokémon:\n\nNombre: ${pokemonData.name}\nAltura: ${pokemonData.height}\nPeso: ${pokemonData.weight}`);
+                    })
+                    .catch(error => console.error('Error fetching Pokémon details:', error));
+            };
+        });
+    </script>
+
+</body>
+</html>
